@@ -12,10 +12,16 @@ class ProductApiController extends BaseApiController {
 
     async getProducts() {
         try {
-            const products: Product[] = await productService.findAll();
+            const { limit = 20, offset = 0 } = this.getPaginationParams()
+            const { q } = this.getQueries();
+            const products: Product[] = await productService.findAll({
+                limit: +limit,
+                offset: +offset,
+                q: q as (string | undefined)
+            });
             this.response.status(200).send({
                 success: true,
-                products: []
+                products
             });
         } catch (error: any) {
             return this.sendResponseError({
@@ -30,10 +36,10 @@ class ProductApiController extends BaseApiController {
     async getProductById() {
         try {
             const product_id = this.getParams().product_id;
-            productService.findAll();
+            const product = await productService.findById({ product_id: +product_id });
             this.response.status(200).send({
                 success: true,
-                products: []
+                product
             });
         } catch (error: any) {
             return this.sendResponseError({

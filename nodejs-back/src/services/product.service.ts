@@ -5,15 +5,28 @@ import { Product } from "../utils/types";
 
 class ProductService {
 
-    async findAll() {
-        const response: Response = await axios.get('https://dummyjson.com/products')
-        if (response.statusCode === 200) {
-            return (response as any).data.products;
+    async findAll({ limit, offset, q }: { limit?: number; offset?: number; q?: string; }) {
+        if (!q) {
+            const response: Response = await axios.get(`https://dummyjson.com/products?limit=${limit}&skip=${offset}`)
+            if (response.statusCode === 200) {
+                return (response as any).data.products;
+            } else {
+                throw new ErrorHandler({
+                    message: 'Something gone wrong',
+                    statusCode: 500
+                });
+            }
         } else {
-            throw new ErrorHandler({
-                message: 'Something gone wrong',
-                statusCode: 500
-            });
+            const response: Response = await axios.get(`https://dummyjson.com/products/search?q=${q}&limit=${limit}&skip=${offset}`)
+            if (response.statusCode === 200) {
+                return (response as any).data.products;
+            } else {
+                throw new ErrorHandler({
+                    message: 'Something gone wrong',
+                    statusCode: 500
+                });
+            }
+
         }
     }
 
