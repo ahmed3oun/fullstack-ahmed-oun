@@ -1,0 +1,5 @@
+nodejs-back/node_modules
+nodejs-back/dist
+nodejs-back/.env
+
+react-front
